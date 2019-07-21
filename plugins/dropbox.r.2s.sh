@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# Copyright (c) 2018 Andrew Steel <copyright@andrewsteel.net>
+# Copyright (c) 2018-2019 Andrew Steel <copyright@andrewsteel.net>
 #
 # SPDX-License-Identifier: MIT
 #
@@ -52,11 +52,12 @@ OUTPUT="$(
 
 # Determine the basic state:
 #
-# - "DONE":     Dropbox has finished synchronizing,
-# - "OFFLINE":  No network connection,
-# - "STARTING": Dropbox is initializing,
-# - "SYNCING":  Dropbox is synchronizing,
-# - "":         `dropbox` not in PATH, or unrecognized output.
+# - "DONE":      Dropbox has finished synchronizing,
+# - "OFFLINE":   No network connection,
+# - "STARTING":  Dropbox is initializing,
+# - "SYNCING":   Dropbox is synchronizing,
+# - "UPGRADING": Dropbox is upgrading,
+# - "":          `dropbox` not in PATH, or unrecognized output.
 STATE="$(
 	case "$(
 		printf '%s\n' "${OUTPUT}" \
@@ -69,17 +70,19 @@ STATE="$(
 		('Syncing')       echo 'SYNCING';;
 		('Syncing...')    echo 'SYNCING';;
 		('Up')            echo 'DONE';;
+		('Upgrading')     echo 'UPGRADING';;
 		(*)               echo '';;
 	esac
 )"
 
 BUTTON_ICON="$(
 	case "${STATE}" in
-		('DONE')     echo 'emblem-ok-symbolic';;
-		('OFFLINE')  echo 'network-offline-symbolic';;
-		('STARTING') echo 'content-loading-symbolic';;
-		('SYNCING')  echo 'emblem-synchronizing-symbolic';;
-		(*)          echo 'goa-panel-symbolic';;
+		('DONE')      echo 'emblem-ok-symbolic';;
+		('OFFLINE')   echo 'network-offline-symbolic';;
+		('STARTING')  echo 'content-loading-symbolic';;
+		('SYNCING')   echo 'emblem-synchronizing-symbolic';;
+		('UPGRADING') echo 'software-update-available-symbolic';;
+		(*)           echo 'goa-panel-symbolic';;
 	esac
 )"
 
