@@ -52,6 +52,8 @@ OUTPUT="$(
 
 # Determine the basic state:
 #
+# - "APPLYING":  Dropbox is applying a setting,
+# - "BLOCKED":   Dropbox is blocked from operating,
 # - "DONE":      Dropbox has finished synchronizing,
 # - "OFFLINE":   No network connection,
 # - "STARTING":  Dropbox is initializing,
@@ -64,6 +66,8 @@ STATE="$(
 		| head -n '1' \
 		| cut -d ' ' -f '1'
 	)" in
+		('Applying')      echo 'APPLYING';;
+		("Can't")         echo 'BLOCKED';;
 		('Checking')      echo 'STARTING';;
 		('Connecting...') echo 'OFFLINE';;
 		('Starting...')   echo 'STARTING';;
@@ -77,6 +81,8 @@ STATE="$(
 
 BUTTON_ICON="$(
 	case "${STATE}" in
+		('APPLYING')  echo 'dialog-information-symbolic';;
+		('BLOCKED')   echo 'dialog-warning-symbolic';;
 		('DONE')      echo 'emblem-ok-symbolic';;
 		('OFFLINE')   echo 'network-offline-symbolic';;
 		('STARTING')  echo 'content-loading-symbolic';;
