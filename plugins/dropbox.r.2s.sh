@@ -103,5 +103,27 @@ printf '| iconName="%s" image="%s"\n---\n' \
 	"${BUTTON_ICON}" \
 	"${DROPDOWN_ENABLED:+${BUTTON_DROPDOWN}}"
 
-	printf '%s\n' \
-		"${OUTPUT}"
+	printf '%s\n' "$(
+		if test "${STATE}" == 'SYNCING'; then
+
+			# If the first two lines of output (sans punctuation and whitespace)
+			# are identical...
+			if test "$(
+				printf '%s\n' "${OUTPUT}" \
+				| sed -n '1p' \
+				| tr -d -c '[:alnum:]'
+			)" == "$(
+				printf '%s\n' "${OUTPUT}" \
+				| sed -n '2p' \
+				| tr -d -c '[:alnum:]'
+			)"; then
+				printf '%s\n' "${OUTPUT}" \
+				| sed '2d'
+			else
+				printf '%s\n' "${OUTPUT}"
+			fi
+
+		else
+			printf '%s\n' "${OUTPUT}"
+		fi
+	)"
